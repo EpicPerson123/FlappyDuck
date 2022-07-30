@@ -1,8 +1,8 @@
 import time
-
-import pygame
 from random import randint
 from sys import exit
+
+import pygame
 
 pygame.init()
 
@@ -31,7 +31,7 @@ class Bird(Sprite):
 
 
 class Pipe(Sprite):
-    speed: int = 5
+    speed: int = 3
 
     def __init__(self, name):
         super().__init__(name)
@@ -71,6 +71,7 @@ if __name__ == '__main__':
                     start = True
                     gravity = 14
                     d = 1
+
         text_surf = score_text.render(f'Score: {score}', False, '#d3f5f5', '#26d1d1')
         text_rect = text_surf.get_rect(midtop=(510, 0))
 
@@ -83,6 +84,7 @@ if __name__ == '__main__':
         bird.rect.y -= gravity
         gravity -= d
 
+        # For when in area of middle of pipes
         if pipe_up.rect.left + 100 < bird.rect.centerx < pipe_up.rect.right:
             for i in range(22):
                 if i == 20:
@@ -92,7 +94,8 @@ if __name__ == '__main__':
                     rand_top = randint(10, 650)
                     rand_bott = randint(10, 650)
 
-                    while rand_top > rand_bott or (rand_bott - rand_top) < 100:
+                    # Invalid  * Overlapping sprites*,     *Too tight*   must be "re-rolled"
+                    while not rand_top < rand_bott or not (rand_bott - rand_top) > 165:
                         rand_top = randint(10, 650)
                         rand_bott = randint(10, 650)
 
@@ -105,9 +108,8 @@ if __name__ == '__main__':
             pipe_up.rect.left -= pipe_up.speed
             pipe_down.rect.left -= pipe_down.speed
 
-        for i in range(5, 201, 5):
-            if score == i:
-                Pipe.speed += 1
+        if score in range(5, 201, 5):
+            Pipe.speed += .009
 
         if_floor = bird.rect.y > 700
         if_ceiling = bird.rect.y < -30
